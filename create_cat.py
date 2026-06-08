@@ -17,7 +17,7 @@ Gaia.MAIN_GAIA_TABLE = "gaiadr3.gaia_source"
 
 
 config_name = 'main.json'
-config_name_pathes = '../pathes.json'   
+config_name_paths = '../paths.json'   
 
 with open(config_name, 'r') as file:
     configs = json.load(file)   
@@ -29,8 +29,8 @@ mag_min = configs['mag_min']
 max_max = configs['max_max']
 name = configs['name']
 
-with open(config_name_pathes, 'r') as file:
-    configs_pathes = json.load(file)
+with open(config_name_paths, 'r') as file:
+    configs_paths = json.load(file)
 catalog_path = configs['catalog_path']
 
 width =  d_ra * un.deg
