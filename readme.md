@@ -1,5 +1,5 @@
 ## Configs
-### createCat
+### createGaiaCat
 | key | val | description |
 | -------- | -------- | -------- |
 | ra | 259.212 | прямое восхождение RA центра поля |
