@@ -1,4 +1,5 @@
-# createCat.json
+## Configs
+### createCat
 | key | val | description |
 | -------- | -------- | -------- |
 | ra | 259.212 | прямое восхождение RA центра поля |
@@ -6,7 +7,7 @@
 | d_ra | 1 | диапазон поля по RA |
 | d_dec | 0.35 | диапазон поля по Dec |
 
-# createRefsCat.json
+### createRefsCat
 | key | val | description |
 | -------- | -------- | -------- |
 | Vcat_name | Vcat_F4.csv | название каталога с переменными |
