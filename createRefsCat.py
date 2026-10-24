@@ -7,9 +7,12 @@ Created on Mon Jul 13 19:06:25 2026
 """
 
 import os
+import sys    
 import json
 import pandas as pd
 import numpy as np
+
+from funcs import readConfig
 
 def calcRo(g_inx, Cat):
     d_ra = Cat.ra - Cat.loc[g_inx, 'ra']
@@ -18,25 +21,7 @@ def calcRo(g_inx, Cat):
     ro.loc[g_inx] = 1
     return ro
 
-def run(field, G_var = []):
-    config_name_paths = f'../paths_{field}.json'   
-    with open(config_name_paths, 'r') as file:
-        configs_paths = json.load(file)
-    dir_cat = configs_paths['dir_cat']
-    cat_name = configs_paths['cat_name']
-    cat_path = dir_cat + cat_name
-    
-    dir_res = dir_cat
-    field = cat_name[:-5]
-    
-    save_path = dir_res 
-       
-    mag_st_max = 15
-    mag_st_min = 12
-    
-    mag_high = 12
-    mag_low = 20
-    
+def run(field, cat_path, save_path, mag_st_min, mag_st_max, mag_low, mag_high,  G_var = []):
     F = pd.read_csv(cat_path, sep=' ', names=['ra', 'dec', 'mag', 'source_id'], index_col=0)
     print(G_var)
     #### cut by mags
@@ -46,7 +31,6 @@ def run(field, G_var = []):
     
     #### drop Vars
     #G_var = [] # !TODO
-    
     St = St[~np.isin(St.index, G_var)]
     #### add min distance
     mag_0 = F.mag.min()
@@ -82,16 +66,33 @@ def run(field, G_var = []):
     
     St.to_csv(save_path + f'Refs_{field}.csv', float_format='%.6f')
 
-dir_vars = '/home/fedora/Documents/scires/reports/conf/_САО/САО26/results/catalogs/vars/'
-for i in range(1, 6):
-    field = f'F{i}'
-    v_path = dir_vars +f'Vars_{field}_2412.csv'
-    if os.path.isfile(v_path):
-        V = pd.read_csv(v_path, index_col=0)
-        G_var = V.g_inx_DR3.values
-    else:
-        G_var = []
-    run(field, G_var)
+
+if len(sys.argv)>1:
+    config_name_paths = sys.argv[1]
+else:
+    config_name_paths = '../configs/paths_F5.json'
+#############################################################
+# Preparation
+#############################################################
+#### read configs
+dir_configs, dir_vars, dir_cat, cat_name = readConfig(config_name_paths, 
+                                                      keys=['dir_configs', 'dir_vars',
+                                                            'dir_cat', 'cat_name'])
+config_name = dir_configs + 'createRefsCat.json'
+Vcat_name, index_col, mag_st_max, mag_st_min, mag_high, mag_low = readConfig(config_name)
+
+vars_path = dir_vars + Vcat_name
+
+if os.path.isfile(vars_path):
+    V = pd.read_csv(vars_path, index_col=0)
+    G_var = V[index_col].values
+else:
+    G_var = []
+
+catalog_path = dir_cat + cat_name
+field = cat_name[:-5]
+
+run(field, catalog_path, dir_cat, mag_st_min, mag_st_max, mag_low, mag_high, G_var)
 
 
 
